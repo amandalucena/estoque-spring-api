@@ -1,11 +1,13 @@
 package com.amanda.estoqueAPI.model;
 
+import com.amanda.estoqueAPI.model.Enum.TipoProduto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,20 +29,27 @@ public class Produto {
     @Column (name = "tamanho", length = 20, nullable = false)
     private String tamanho;
 
-    @Column (name = "quantidade")
-    private int quantidade;
+    @Column (name = "quantidade", nullable = false)
+    private Integer quantidade;
 
-    @OneToMany (mappedBy = "produto")
-    private List<ItemVenda> itens;
+    @Column (name = "preco", precision = 18, scale = 2, nullable = false)
+    private BigDecimal preco;
 
-    @Column (name = "cor", length = 20, nullable = true )
-    private String cor;
+//    @OneToMany (mappedBy = "produto")
+//    private List<ItemVenda> itens;
 
-    @Column (name = "estampa", length = 100, nullable = true)
-    private String estampa;
+//    @Column (name = "cor", length = 20, nullable = true )
+//    private String cor;
+//
+//    @Column (name = "estampa", length = 100, nullable = true)
+//    private String estampa;
+//
+//    @Column (name = "descricao", length = 100, nullable = true)
+//    private String descricao;
 
-    @Column (name = "descricao", length = 100, nullable = true)
-    private String descricao;
+//    @Enumerated (EnumType.STRING)
+//    @Column (name = "tipo_produto")
+//    private TipoProduto tipoProduto;
 
 
     public String toString (){
@@ -49,6 +58,7 @@ public class Produto {
                 ", nome='" + nome + '\'' +
                 ", tamanho=" + tamanho +
                 ", quantidade=" + quantidade + '\'' +
+                ", preço=" + preco + '\'' +
                 '}';
     }
 

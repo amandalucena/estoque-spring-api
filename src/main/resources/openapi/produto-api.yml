@@ -1,0 +1,238 @@
+openapi: 3.0.3
+
+info:
+  title: API de Estoque
+  description: Contrato da API de estoque
+  version: 1.0.0
+
+paths:
+  /produtos:
+    get:
+      summary: Listar produtos
+      responses:
+        '200':
+          description: Lista de produtos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Produto'
+
+    post:
+      summary: Criar produto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produto'
+      responses:
+        '201':
+          description: Produto criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroValidacao'
+
+  /produtos/{id}:
+    get:
+      summary: Buscar produto por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Produto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        '404':
+          description: Produto não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroPadrao'
+
+    delete:
+      summary: Deletar produto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Produto removido com sucesso
+        '400':
+          description: Requisição inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroSolicitacao'
+
+    put:
+      summary: Atualizar produto
+      description: Atualiza os dados de um produto existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: string
+            format: uuid
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produto'
+
+      responses:
+        '204':
+          description: Produto atualizado com sucesso
+
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroValidacao'
+
+
+  /produtos/nome/{nome}:
+    get:
+      summary: Buscar produto por nome
+      parameters:
+        - name: nome
+          in: path
+          required: true
+          description: Nome do produto
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Produto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produto'
+        '404':
+          description: Produto não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErroPadrao'
+
+
+components:
+  schemas:
+    Produto:
+      oneOf:
+        - $ref: '#/components/schemas/ProdutoPadrao'
+        - $ref: '#/components/schemas/Camiseta'
+      discriminator:
+        propertyName: tipo
+        mapping:
+          PADRAO: '#/components/schemas/ProdutoPadrao'
+          CAMISETA: '#/components/schemas/Camiseta'
+
+    ProdutoPadrao:
+      type: object
+      required: [tipo, nome, tamanho, quantidade, preco]
+      properties:
+        tipo:
+          type: string
+          example: PADRAO
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+        tamanho:
+          type: string
+        quantidade:
+          type: integer
+        preco:
+          type: number
+          format: double
+
+    Camiseta:
+      type: object
+      required: [tipo, nome, tamanho, quantidade, preco, cor, estampa]
+      properties:
+        tipo:
+          type: string
+          example: CAMISETA
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+        tamanho:
+          type: string
+        quantidade:
+          type: integer
+        preco:
+          type: number
+          format: double
+        cor:
+          type: string
+        estampa:
+          type: string
+
+    ErroValidacao:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 422
+        message:
+          type: string
+          example: Erro de validação
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              error:
+                type: string
+
+    ErroPadrao:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: Recurso não encontrado
+
+    ErroSolicitacao:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Requisição inválida

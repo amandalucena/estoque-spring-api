@@ -15,9 +15,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping ("/produto")
@@ -78,6 +80,28 @@ public class ProdutoController {
        service.deletar(produtoOptional.get());
        return ResponseEntity.noContent().build();
 
+    }
+
+    @GetMapping ("/filtro")
+    public ResponseEntity <List<ProdutoDTO>> pesquisar (
+            @RequestParam (value = "nome", required = false) String nome,
+            @RequestParam (value = "tamanho", required = false) String tamanho,
+            @RequestParam (value = "quantidade", required = false) Integer quantidade
+    ){
+       List <Produto> resltado = service.pesquisa(nome, tamanho, quantidade);
+
+       List <ProdutoDTO> lista = resltado
+               .stream()
+               .map(produto -> new ProdutoDTO(
+                       produto.getId(),
+                       produto.getNome(),
+                       produto.getTamanho(),
+                       produto.getQuantidade(),
+                       produto.getPreco()
+                       )
+               ).collect(Collectors.toList());
+
+       return ResponseEntity.ok(lista);
     }
 
 

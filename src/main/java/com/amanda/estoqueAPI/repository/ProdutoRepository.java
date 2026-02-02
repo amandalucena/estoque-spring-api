@@ -15,6 +15,18 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
     List <Produto> findByQuantidade (Integer quantidade);
     List <Produto> findByPreco (BigDecimal preco);
 
+    List <Produto> findByNomeAndTamanho (
+            String nome,
+            String tamanho
+    );
+
+
+    List<Produto> findByNomeAndTamanhoAndQuantidade(
+            String nome,
+            String tamanho,
+            Integer quantidade
+    );
+
     Optional <Produto> findByNomeAndTamanhoAndQuantidadeAndPreco(
             String nome,
             String tamanho,

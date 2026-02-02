@@ -104,6 +104,29 @@ public class ProdutoController {
        return ResponseEntity.ok(lista);
     }
 
+    @PutMapping ("{id}")
+    public ResponseEntity <Object> atualizar (
+            @PathVariable ("id") String id,
+            @RequestBody @Valid ProdutoDTO dto){
+
+       var idProduto = UUID.fromString(id);
+       Optional<Produto> produtoOptional = service.ObterPorId(idProduto);
+
+       if (produtoOptional.isEmpty()){
+           return ResponseEntity.notFound().build();
+       }
+
+       var produto = produtoOptional.get();
+       produto.setNome(dto.nome());
+       produto.setTamanho(dto.tamanho());
+       produto.setQuantidade(dto.quantidade());
+       produto.setPreco(dto.preco());
+
+       service.atualizar(produto);
+
+       return ResponseEntity.noContent().build();
+    }
+
 
 
 

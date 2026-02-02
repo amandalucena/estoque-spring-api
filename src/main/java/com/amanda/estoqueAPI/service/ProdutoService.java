@@ -52,7 +52,15 @@ public class ProdutoService {
 
         return produtoRepository.findAll();
 
-
     }
+
+    public void atualizar (Produto produto){
+        if (produto.getId() == null){
+            throw new IllegalArgumentException("Para atualizar é necessário qe o produto ja estaja salvo na base");
+        }
+
+        produtoRepository.save(produto);
+    }
+
 
 }

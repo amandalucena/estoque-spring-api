@@ -22,6 +22,10 @@ public class ProdutoService {
         return produtoRepository.findById(id);
     }
 
+    public void deletar (Produto produto){
+        produtoRepository.delete(produto);
+    }
+
 
 
 

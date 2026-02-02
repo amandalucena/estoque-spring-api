@@ -46,7 +46,7 @@ public class ProdutoController {
     }
 
 
-    //Listar por ID
+    //Obter detalhes a partir do ID
     @GetMapping ("{id}")
     public ResponseEntity <ProdutoDTO> obterDetalhes (@PathVariable ("id") String id){
        var idProduto = UUID.fromString(id);
@@ -67,6 +67,20 @@ public class ProdutoController {
 
         return ResponseEntity.notFound().build();
     }
+
+
+    @DeleteMapping ("{id}")
+    public ResponseEntity <Object> deletar (@PathVariable ("id") String id){
+
+       var idProduto = UUID.fromString(id);
+       Optional <Produto> produtoOptional = service.ObterPorId(idProduto);
+
+       service.deletar(produtoOptional.get());
+       return ResponseEntity.noContent().build();
+
+    }
+
+
 
 
 }

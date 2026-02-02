@@ -16,6 +16,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping ("/produto")
@@ -25,6 +27,7 @@ public class ProdutoController {
     private final ProdutoService service;
 
 
+    //Cadastro de Produto
    @PostMapping
    public ResponseEntity<Object> salvar(@RequestBody  @Valid ProdutoDTO produto) {
 
@@ -43,9 +46,26 @@ public class ProdutoController {
     }
 
 
-    @GetMapping
-    public String teste() {
-        return "API OK";
+    //Listar por ID
+    @GetMapping ("{id}")
+    public ResponseEntity <ProdutoDTO> obterDetalhes (@PathVariable ("id") String id){
+       var idProduto = UUID.fromString(id);
+        Optional <Produto> produto = service.ObterPorId(idProduto);
+
+        if (produto.isPresent()){
+            Produto entidade = produto.get();
+            ProdutoDTO dto = new ProdutoDTO(
+                    produto.get().getId(),
+                    produto.get().getNome(),
+                    produto.get().getTamanho(),
+                    produto.get().getQuantidade(),
+                    produto.get().getPreco()
+            );
+
+            return ResponseEntity.ok(dto);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
 
